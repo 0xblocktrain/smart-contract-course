@@ -14,7 +14,7 @@ contract Escrow {
         require(msg.value > 0, "Must deposit a positive amount.");
 
         // Deposit the funds into the escrow contract
-        escrow.transfer(msg.value);
+        payable(escrow).transfer(msg.value);
     }
 
     // Function to release the funds from escrow
@@ -22,7 +22,7 @@ contract Escrow {
         require(fundsLocked, "Funds are not locked in escrow.");
 
         // Transfer the funds to the caller
-        msg.sender.transfer(this.balance);
+        payable(msg.sender).transfer(address(this).balance);
 
         // Set the fundsLocked flag to false
         fundsLocked = false;
