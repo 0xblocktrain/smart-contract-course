@@ -18,7 +18,7 @@ contract P2PLendingPlatform {
         require(msg.value >= amount, "Insufficient funds for loan listing.");
 
         // Generate a unique ID for the loan
-        uint id = keccak256(abi.encodePacked(msg.sender, now, amount));
+        uint id = uint(keccak256(abi.encodePacked(msg.sender, block.timestamp, amount)));
 
         // Set the loan info
         loans[id] = Loan({
@@ -37,7 +37,7 @@ contract P2PLendingPlatform {
         loans[id].borrower = msg.sender;
 
         // Transfer the loan amount to the borrower
-        msg.sender.transfer(loans[id].amount);
+        payable(msg.sender).transfer(loans[id].amount);
     }
 
     // Function for a user to repay a loan
@@ -46,7 +46,7 @@ contract P2PLendingPlatform {
         require(msg.value >= loans[id].amount, "Insufficient funds to repay loan.");
 
         // Transfer the loan amount to the lender
-        loans[id].lender.transfer(loans[id].amount);
+        payable(loans[id].lender).transfer(loans[id].amount);
 
         // Set the repaid flag to true
         loans[id].repaid = true;
